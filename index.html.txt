@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Leidy 💛</title>
+
+<style>
+body{
+    margin:0;
+    background:#f5e9dc;
+    overflow:hidden;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ESCENA */
+.scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+}
+
+/* TRONCO */
+.trunk{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    width:14px;
+    height:0;
+    background:#7a4b22;
+    border-radius:10px;
+    transform:translateX(-50%);
+    animation:growTrunk 4s ease-out forwards;
+}
+
+@keyframes growTrunk{
+    to{height:260px;}
+}
+
+/* RAMAS */
+.branch{
+    position:absolute;
+    height:6px;
+    background:#7a4b22;
+    border-radius:10px;
+    transform-origin:left;
+    width:0;
+}
+
+@keyframes growBranch{
+    to{width:140px;}
+}
+
+/* GIRASOL REAL */
+.sunflower{
+    position:absolute;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#4a2d00;
+    opacity:0;
+    transform:scale(0);
+    transition:0.4s ease;
+}
+
+.sunflower::before{
+    content:"";
+    position:absolute;
+    width:36px;
+    height:36px;
+    background:
+    radial-gradient(circle, #ffcc00 40%, transparent 41%);
+    border-radius:50%;
+    top:-7px;
+    left:-7px;
+}
+
+/* TARJETA */
+.card{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    background:#fff;
+    padding:25px;
+    border-radius:20px;
+    width:320px;
+    text-align:left;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    opacity:0;
+    transition:1s;
+}
+
+.card.show{
+    transform:translate(-50%,-50%) scale(1);
+    opacity:1;
+}
+
+.timer{
+    margin-top:10px;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+    <div class="trunk"></div>
+</div>
+
+<div class="card" id="card">
+    <p><b>Flores amarillas para Leidy Montejo 🌻</b></p>
+    <p>Si pudiera elegir un lugar seguro, sería a tu lado.</p>
+    <p>Cuanto más tiempo estoy contigo más te amo.</p>
+    <p style="text-align:center;">— I Love You! —</p>
+    <div class="timer" id="timer"></div>
+</div>
+
+<script>
+const scene = document.getElementById("scene");
+
+/* RAMAS SUAVES */
+setTimeout(()=>{
+    createBranch(-20, -40);
+    createBranch(20, 40);
+},3500);
+
+function createBranch(offset, angle){
+    let b = document.createElement("div");
+    b.className="branch";
+    b.style.bottom="260px";
+    b.style.left="50%";
+    b.style.transform=`translateX(${offset}px) rotate(${angle}deg)`;
+    scene.appendChild(b);
+
+    setTimeout(()=>{
+        b.style.animation="growBranch 2s ease-out forwards";
+    },100);
+}
+
+/* FUNCIÓN CORAZÓN */
+function heart(t){
+    return {
+        x:16*Math.pow(Math.sin(t),3),
+        y:13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)
+    };
+}
+
+/* GIRASOLES REALISTAS */
+setTimeout(()=>{
+    let total = 350;
+
+    for(let i=0;i<total;i++){
+        let t = (i/total)*Math.PI*2;
+        let p = heart(t);
+
+        let f = document.createElement("div");
+        f.className="sunflower";
+
+        f.style.left = (window.innerWidth/2 + p.x*10) + "px";
+        f.style.top = (window.innerHeight/2 - p.y*10) + "px";
+
+        scene.appendChild(f);
+
+        setTimeout(()=>{
+            f.style.opacity=1;
+            f.style.transform="scale(1)";
+        }, i*10);
+    }
+
+    showCard();
+
+},5500);
+
+/* MOSTRAR MENSAJE */
+function showCard(){
+    setTimeout(()=>{
+        document.getElementById("card").classList.add("show");
+        startTimer();
+    },3000);
+}
+
+/* CONTADOR */
+function startTimer(){
+    const start = new Date("2023-06-05");
+
+    setInterval(()=>{
+        let now = new Date();
+        let diff = now - start;
+
+        let d = Math.floor(diff/86400000);
+        let h = Math.floor(diff/3600000)%24;
+        let m = Math.floor(diff/60000)%60;
+
+        document.getElementById("timer").innerText =
+        `${d} días ${h}h ${m}m juntos 💛`;
+    },1000);
+}
+</script>
+
+</body>
+</html>
