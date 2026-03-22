@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flores Amarillas - Para el amor de mi vida</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #c8e8ff 0%, #b0d4f0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Dancing Script', 'Pacifico', cursive, system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /* Tarjeta de mensaje */
+        .love-card {
+            background: rgba(255, 248, 225, 0.95);
+            backdrop-filter: blur(4px);
+            border-radius: 60px 60px 80px 80px;
+            padding: 2rem 2rem 2rem 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2), 0 0 0 8px rgba(255,215,0,0.3);
+            border: 2px solid #ffd966;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+
+        .love-card:hover {
+            transform: scale(1.01);
+        }
+
+        .love-card h1 {
+            font-size: 2rem;
+            color: #d48f2b;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
+        }
+
+        .flores-title {
+            display: inline-block;
+            background: #fff0b5;
+            padding: 0.3rem 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            font-size: 1.3rem;
+            color: #5a3e1b;
+            margin: 1.2rem 0;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .message strong {
+            color: #e6a017;
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            background: #fdebb3;
+            padding: 0.8rem;
+            border-radius: 70px;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #b45f1b;
+            letter-spacing: 1px;
+        }
+
+        .signature {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #a5672e;
+            border-top: 1px dashed #ffcd7e;
+            padding-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Área del árbol y flores */
+        .tree-scene {
+            position: relative;
+            width: 100%;
+            min-height: 420px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: transparent;
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        /* Botón y pequeños detalles */
+        .info-text {
+            text-align: center;
+            margin-top: 15px;
+            color: #4b2e12;
+            background: rgba(255,250,210,0.8);
+            padding: 6px 15px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+        }
+
+        button {
+            background: #ffd966;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 40px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #593c1a;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background: #ffc107;
+            transform: scale(1.03);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 550px) {
+            .love-card h1 { font-size: 1.6rem; }
+            .message { font-size: 1rem; }
+            .timer { font-size: 0.9rem; }
+            .container { margin: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="love-card">
+        <div class="flores-title">
+            <h1>🌼 Flores Amarillas 🌼</h1>
+        </div>
+        <div class="message">
+            <strong>✨ Para el amor de mi vida ✨</strong><br>
+            Si pudiera elegir un lugar seguro, sería a tu lado.<br>
+            Cuanto más tiempo estoy contigo más te amo.<br>
+            💛 <em>— I Love You!</em> 💛
+        </div>
+        <div class="timer" id="loveTimer">
+            Mi amor por ti comenzó hace...<br>
+            <span id="timeDisplay">Cargando...</span>
+        </div>
+        <div class="signature">
+            AlexDev | Flores Amarillas para dedicar...
+        </div>
+    </div>
+
+    <div class="tree-scene">
+        <canvas id="treeCanvas" width="500" height="400" style="width:100%; height:auto; max-width:500px; aspect-ratio:500/400"></canvas>
+    </div>
+    <button id="addFlowerBtn">🌼 Añadir flor amarilla 🌼</button>
+    <div class="info-text">
+        🌟 Toca el árbol para hacer florecer más amor 🌟
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- CONFIGURACIÓN DEL ÁRBOL CON FLORES AMARILLAS -----
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Dimensiones reales (fijamos 500x400)
+        canvas.width = 500;
+        canvas.height = 400;
+        
+        // Almacenamiento de flores (cada flor: {x, y, size, angle})
+        let flowers = [];
+        
+        // Parámetros del árbol (tronco y copa estilo "arbolito")
+        const treeBaseX = 250;     // centro base del tronco
+        const groundY = 340;       // donde empieza el suelo visual
+        
+        // Generar flores iniciales (entre 6 y 12 flores distribuidas en la copa)
+        function generateInitialFlowers() {
+            const flowerCount = Math.floor(Math.random() * 9) + 8; // 8 a 16 flores
+            for (let i = 0; i < flowerCount; i++) {
+                // Área de la copa: desde x 180 a 320, y desde 200 hasta 320 (evitar tronco)
+                let x = 180 + Math.random() * 140;
+                let y = 210 + Math.random() * 115;
+                // Ajuste para no salir mucho de la silueta redondeada: 
+                // centro copa en (250, 260) radio ~80
+                let centerX = 250, centerY = 260;
+                let dx = x - centerX;
+                let dy = y - centerY;
+                let dist = Math.hypot(dx, dy);
+                if (dist > 78) {
+                    // redirigir un poco hacia adentro
+                    let angle = Math.atan2(dy, dx);
+                    x = centerX + Math.cos(angle) * (65 + Math.random() * 20);
+                    y = centerY + Math.sin(angle) * (60 + Math.random() * 20);
+                }
+                // Tamaño de pétalos
+                let size = 6 + Math.random() * 5;
+                let angle = Math.random() * Math.PI * 2;
+                flowers.push({ x, y, size, angle });
+            }
+        }
+        
+        // Dibujar el árbol estilo tierno con tronco y copa de hojas verdes
+        function drawTree() {
+            // 1. Tronco (marrón)
+            ctx.beginPath();
+            ctx.rect(treeBaseX - 28, groundY - 50, 56, 58);
+            ctx.fillStyle = '#8B5A2B';
+            ctx.fill();
+            ctx.fillStyle = '#6B3E1A';
+            ctx.beginPath();
+            ctx.rect(treeBaseX - 24, groundY - 45, 48, 53);
+            ctx.fill();
+            
+            // Detalles de corteza
+            ctx.fillStyle = '#C67C3E';
+            ctx.beginPath();
+            for(let i = 0; i < 5; i++) {
+                ctx.moveTo(treeBaseX - 15 + i*8, groundY-25);
+                ctx.lineTo(treeBaseX - 10 + i*6, groundY-12);
+                ctx.lineTo(treeBaseX - 18 + i*8, groundY-18);
+                ctx.fill();
+            }
+            
+            // 2. Copa de árbol (varias capas verdes redondeadas)
+            // Sombra suave
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = 8;
+            // Capa grande inferior
+            ctx.beginPath();
+            ctx.ellipse(treeBaseX, groundY - 35, 70, 55, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#6AAB4E';
+            ctx.fill();
+            // Capa media
+            ctx.beginPath();
+            ctx.ellipse(treeBaseX, groundY - 68, 62, 58, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#5C9E3F';
+            ctx.fill();
+            // Capa superior
+            ctx.beginPath();
+            ctx.ellipse(treeBaseX, groundY - 102, 52, 50, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#4C8C34';
+            ctx.fill();
+            // Toque de luz
+            ctx.beginPath();
+            ctx.ellipse(treeBaseX - 12, groundY - 115, 20, 24, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#A9D66B';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(treeBaseX + 15, groundY - 85, 25, 28, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // algunos detalles de hojas (puntitos)
+            ctx.fillStyle = '#458B2E';
+            for(let i=0; i<40; i++) {
+                let angleLeaf = Math.random() * Math.PI * 2;
+                let rad = 30 + Math.random() * 55;
+                let lx = treeBaseX + Math.cos(angleLeaf) * rad;
+                let ly = groundY - 70 + Math.sin(angleLeaf) * rad * 0.7;
+                ctx.beginPath();
+                ctx.arc(lx, ly, 2+Math.random()*3, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+        
+        // Dibujar flor amarilla con pétalos redondos estilo margarita pequeña
+        function drawFlower(x, y, size, rotationAngle = 0) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotationAngle);
+            // Centro café/amarillo
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.6, 0, Math.PI * 2);
+            ctx.fillStyle = '#F7B32B';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = '#E59400';
+            ctx.fill();
+            
+            // 8 pétalos amarillos
+            const petalCount = 8;
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2;
+                const px = Math.cos(angle) * size;
+                const py = Math.sin(angle) * size;
+                ctx.beginPath();
+                ctx.ellipse(px, py, size * 0.65, size * 0.45, angle, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFE170';
+                ctx.fill();
+                ctx.fillStyle = '#FAD460';
+                ctx.beginPath();
+                ctx.ellipse(px, py, size * 0.45, size * 0.3, angle, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            // centro final brillo
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFC857';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
+            ctx.fillStyle = '#AA6F20';
+            ctx.fill();
+            ctx.restore();
+        }
+        
+        // Dibujar pasto / detalles de suelo
+        function drawGround() {
+            ctx.fillStyle = '#83B856';
+            ctx.beginPath();
+            ctx.rect(0, groundY + 12, canvas.width, 60);
+            ctx.fill();
+            ctx.fillStyle = '#6A9C3E';
+            for(let i=0; i<60; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i*12, groundY+8);
+                ctx.lineTo(i*12+6, groundY);
+                ctx.lineTo(i*12-6, groundY);
+                ctx.fill();
+            }
+            // flores silvestres pequeñas alrededor del suelo
+            for(let i=0;i<15;i++) {
+                let fx = 20 + Math.random() * 460;
+                let fy = groundY + 6 + Math.random() * 12;
+                ctx.beginPath();
+                ctx.arc(fx, fy, 2, 0, Math.PI*2);
+                ctx.fillStyle = '#F9E076';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(fx-1, fy-1, 1, 0, Math.PI*2);
+                ctx.fillStyle = '#F5BC42';
+                ctx.fill();
+            }
+        }
+        
+        // Función principal de dibujo completo: árbol + flores + suelo
+        function render() {
+            if (!ctx) return;
+            // fondo cielo con degradado
+            const grad = ctx.createLinearGradient(0, 0, 0, groundY+20);
+            grad.addColorStop(0, '#f9eec1');
+            grad.addColorStop(1, '#cfe6b4');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // nubes suaves
+            ctx.fillStyle = 'rgba(255,255,240,0.9)';
+            ctx.beginPath();
+            ctx.ellipse(70, 45, 35, 28, 0, 0, Math.PI*2);
+            ctx.ellipse(110, 35, 40, 30, 0, 0, Math.PI*2);
+            ctx.ellipse(150, 48, 30, 25, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(380, 70, 45, 32, 0, 0, Math.PI*2);
+            ctx.ellipse(425, 60, 38, 28, 0, 0, Math.PI*2);
+            ctx.ellipse(340, 62, 30, 26, 0, 0, Math.PI*2);
+            ctx.fill();
+            
+            drawTree();
+            drawGround();
+            
+            // Dibujar todas las flores amarillas sobre el árbol y la copa
+            for (let f of flowers) {
+                drawFlower(f.x, f.y, f.size, f.angle);
+            }
+            
+            // opcional: pequeñas mariposas (detalle)
+            ctx.fillStyle = '#F0C674';
+            ctx.beginPath();
+            ctx.ellipse(410, 150, 8, 4, 0.4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(418, 147, 8, 4, -0.3, 0, Math.PI*2);
+            ctx.fill();
+        }
+        
+        // Añadir una nueva flor en una posición aleatoria de la copa
+        function addRandomFlower() {
+            // límites dentro de la copa visual (evitar tronco)
+            let angleRandom = Math.random() * Math.PI * 2;
+            let radius = 35 + Math.random() * 65;   // radio entre 35 y 100
+            let baseX = treeBaseX + Math.cos(angleRandom) * radius;
+            let baseY = groundY - 75 + Math.sin(angleRandom) * radius * 0.7;
+            // ajuste de Y para que no quede muy bajo
+            let yPos = Math.min(baseY, groundY - 25);
+            yPos = Math.max(yPos, groundY - 140);
+            let xPos = Math.min(Math.max(baseX, 170), 330);
+            
+            // tamaño pequeño pero vistoso
+            let newSize = 5 + Math.random() * 6;
+            let newAngle = Math.random() * Math.PI * 2;
+            flowers.push({ x: xPos, y: yPos, size: newSize, angle: newAngle });
+            render();
+            
+            // efecto de añadir flor :D
+            const btn = document.getElementById('addFlowerBtn');
+            if(btn) {
+                btn.style.transform = 'scale(0.97)';
+                setTimeout(() => { btn.style.transform = ''; }, 150);
+            }
+        }
+        
+        // eliminar alguna flor si superamos cierto límite (opcional, para mantener rendimiento)
+        function limitFlowers(maxFlowers = 45) {
+            if(flowers.length > maxFlowers) {
+                flowers = flowers.slice(-maxFlowers);
+            }
+        }
+        
+        // cronómetro del amor: contar desde fecha fija (ejemplo 365 días atrás)
+        // Fijamos una fecha de inicio: hoy - 365 días (para mostrar el año cumplido)
+        // pero puedes personalizar poniendo la fecha exacta de su relación.
+        // Por efecto del código: mostrará días, horas, minutos, segundos desde una fecha especial.
+        let startDate;
+        // si quieres una fecha personalizada: cambia el año/mes/día. Por defecto usaremos "hace 365 días" 
+        // pero con la cuenta regresiva de tiempo transcurrido desde una fecha romántica.
+        // Pondré la fecha: 23 de marzo del año pasado (para que hoy se vea aprox 365 días)
+        // Esto es totalmente configurable.
+        function setStartDate() {
+            // Establecemos una fecha de inicio (un año atrás desde hoy, pero exacta)
+            const today = new Date();
+            let customDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+            // Ajuste para que muestre justo un año atrás, pero también puedes poner "2024-03-22" por ejemplo
+            // Para que la demo siempre muestre algo cercano a 365 días, pero si quieres estático:
+            // Para mayor romanticismo usamos una fecha fija: 22 de marzo 2024 (así hoy se ve alrededor de 365 días)
+            const fixedDate = new Date(2024, 2, 22, 0, 0, 0); // 22 Marzo 2024
+            startDate = fixedDate;
+        }
+        
+        function updateTimer() {
+            if(!startDate) setStartDate();
+            const now = new Date();
+            const diffMs = now - startDate;
+            if(diffMs <= 0) {
+                document.getElementById('timeDisplay').innerText = "0 días 00 horas 00 minutos 00 segundos 💛";
+                return;
+            }
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            document.getElementById('timeDisplay').innerText = 
+                `${days} días ${hours.toString().padStart(2,'0')} horas ${minutes.toString().padStart(2,'0')} minutos ${seconds.toString().padStart(2,'0')} segundos`;
+        }
+        
+        // Inicializar todo
+        function init() {
+            setStartDate();
+            generateInitialFlowers();
+            render();
+            // actualizar contador cada segundo
+            updateTimer();
+            setInterval(updateTimer, 1000);
+            
+            // Evento: clic en el canvas para añadir flor
+            canvas.addEventListener('click', (e) => {
+                addRandomFlower();
+                limitFlowers(55);
+            });
+            
+            // botón para añadir flores
+            const addBtn = document.getElementById('addFlowerBtn');
+            if(addBtn) {
+                addBtn.addEventListener('click', () => {
+                    addRandomFlower();
+                    limitFlowers(55);
+                });
+            }
+            
+            // Efecto responsive para redibujar si cambia tamaño visual pero canvas mantiene resolución
+            window.addEventListener('resize', () => { render(); });
+        }
+        
+        init();
+    })();
+</script>
+</body>
+</html>
